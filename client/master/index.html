@@ -1,0 +1,51 @@
+<html>
+<head>
+<link href="style.css" rel="stylesheet" type="text/css">
+<script src="qrcode.js"></script>
+<script src="qrcanvas.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+run = function() {
+
+  var socket = io.connect('http://localhost');
+  socket.on('connect', function () {
+    socket.emit('master',null);
+  });
+  socket.on('link', function(link) {
+    document.getElementById('link').href = link;
+    append_qrcode(9,"qr_url",link);
+    //document.getElementById('link').innerHTML = link
+  });
+  socket.on('data', function (data) {
+
+    console.log('data')
+    console.log(data.question)
+
+    document.getElementById('question').innerHTML = data.question
+    document.getElementById('q1').innerHTML = data.q1
+    document.getElementById('q2').innerHTML = data.q2
+    document.getElementById('q3').innerHTML = data.q3
+    document.getElementById('q4').innerHTML = data.q4
+  });
+}
+</script>
+</head>
+<body onload='run()'>
+  <div id="sidebar">
+    <h1>Join game!</h1>
+    <a id="link">http://trivia.com/peter-piper</a>
+    <div id="qr_url"></div>
+  </div>
+
+  <div id="content">
+    <h1 id="question">What</h1>
+    <ul>
+      <li id="q1"></li>
+      <li id="q2"></li>
+      <li id="q3"></li>
+      <li id="q4"></li>
+    </ul>
+  </div>
+
+</body>
+</html>

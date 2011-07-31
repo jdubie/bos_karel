@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Page Title</title>
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0b1/jquery.mobile-1.0b1.min.css" />
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
+  <script type="text/javascript" src="http://code.jquery.com/mobile/1.0b1/jquery.mobile-1.0b1.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    window.run = function() {
+
+      var socket = io.connect('http://localhost');
+      window.socket = socket;
+      socket.on('connect', function() {
+        socket.emit('contestant');
+        // socket.emit('contestant',{gameId: parseInt(location.pathname.substring(1,location.pathname.length))});
+      });
+      socket.on('response', function(correct) {
+        if (correct) {
+          alert('correct');
+        } else {
+          alert('incorrect');
+        }
+      });
+      socket.on('data', function (data) {
+
+        console.log('data')
+        console.log(data.question)
+
+        document.getElementById('question').innerHTML = data.question
+        document.getElementById('one').innerHTML = data.q1
+        document.getElementById('two').innerHTML = data.q2
+        document.getElementById('three').innerHTML = data.q3
+        document.getElementById('four').innerHTML = data.q4
+      });
+
+      socket.on('answer', function(bool) {
+        if (bool) {
+          alert('Correct!');
+        } else {
+          alert('Incorrect');
+        }
+      });
+    }
+  </script>
+</head>
+<body onload='window.run()'>
+
+<div data-role="page">
+
+  <div data-role="header">
+    <h1>Page Title</h1>
+  </div><!-- /header -->
+
+  <div data-role="content">
+    <h2 id="question">Question</h2>
+    <ul data-role="listview" data-theme="g" data-inset="true">
+      <li><a id="one" href="javascript:window.socket.emit('answer',1)">Acura</a></li>
+    </ul>
+    <ul data-role="listview" data-theme="g" data-inset="true">
+      <li><a id="two" href="javascript:window.socket.emit('answer',2)">Audi</a></li>
+    </ul>
+    <ul data-role="listview" data-theme="g" data-inset="true">
+      <li><a id="three" href="javascript:window.socket.emit('answer',3)">BMW</a></li>
+    </ul>
+    <ul data-role="listview" data-theme="g" data-inset="true">
+      <li><a id="four" href="javascript:window.socket.emit('answer',4)">BMW</a></li>
+    </ul>
+  </div><!-- /content -->
+
+  <div data-role="footer">
+    <h4>Page Footer</h4>
+  </div><!-- /footer -->
+</div><!-- /page -->
+
+</body>
+</html>
