@@ -1,0 +1,9 @@
+.DS_Store
+node_modules/
+tmp/
+config/pwd.json
+config/env.json
+npm-debug.log
+dump.rdb
+builds.json
+timeTest.sh
