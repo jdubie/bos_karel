@@ -5,20 +5,43 @@ body {
 }
 
 #sidebar {
-  float: left;
+  float: right;
   width: 33%;
-  height: 100%;
-  padding-left: 10px;
+  height: 80%;
+  padding-right: 0px;
+  padding-top: 100px;
+  border-radius:80px / 560px;
   background: #024A68;
 }
 
-#qr_url {
-  margin: 5px;
-  padding: 5px;
+#join {
+	color:red;
+	padding-left: 50px;
+}
+
+#question {
+	color:red;
 }
 
 #content {
   background: #225E79;
+  padding-top:50px;
+  padding-left: 50px;
+  height: 80%;
+}
 
-  height: 100%;
+#link {
+	font-size:150%;
+	text-align: center;
+}
+
+#loggedin {
+	font-size:120%;
+	text-align: center;
+}
+
+#rightside {
+	float:;
+	  border-radius:40px / 40px;
+	  background: #024A68;
 }

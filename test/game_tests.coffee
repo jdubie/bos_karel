@@ -44,7 +44,7 @@ exports['test adding a user'] = (finish,assert,log) ->
 
 exports['test adding and disconnecting n users'] = (finish,assert,log) ->
 
-  n = 100
+  n = 3
   socketIds = ("abc#{i}" for i in [0...n])
   users = _.map socketIds, (id) -> new User(new FakeSocket(id))
 
