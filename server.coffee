@@ -1,7 +1,11 @@
 express      = require 'express'
 io           = require 'socket.io'
 _            = require 'underscore'
+
 env          = require './env'
+resources    = require './resources/game1'
+trivia       = require './objects/simple_trivia'
+
 
 
 if process.env.DEBUG
@@ -23,18 +27,65 @@ app.use express.static __dirname + '/public'
 app.get '/', (req, resp) ->
   resp.render 'index', layout: false
 
-app.get '/:id', (req, resp) ->
-  resp.render 'contestant/index',
-    layout: false
-
 app.get '/env.js', (res,resp) ->
   environment = """
-    window.trivia_host = #{env.Host};
+    window.trivia_host = \"#{env.Host}\";
     window.trivia_port = #{env.Port};
   """
   resp.end environment
 
+app.get '/:id', (req, resp) ->
+  resp.render 'contestant/index',
+    layout: false
+
+
+games = {}
+
+# socket server to listen to socket connections
+io = io.listen(app)
 app.listen env.Port
+
+
+io.sockets.on 'connection', (socket) ->
+
+  socket
+
+    .on 'master', ->
+
+      game = new trivia resources, socket
+      games[game.url] = game
+      game.start()
+
+    .on 'contestant', (url) ->
+
+      games[url].addUser new User socket
+
+
+
+# io.sockets.on 'connection', (socket) ->
+#   socket
+#     .on 'master', ->
+#       socket.emit 'link', 0
+#       console.log 'master connection'
+
+#       curGame.push socket
+#       broadcast curGame
+
+#     .on 'contestant', (info) ->
+#       console.error 'contestant'
+#       curGame.push socket
+#       contenters.push socket.id unless gameStarted
+
+#     .on 'answer', (answer) ->
+
+#       # if they're still in the game and haven't answered yet
+#       if contenters.indexOf(socket.id) != -1 and !advancers[socket.id]?
+#         advancers[socket.id] = answer == correctIndex
+#         socket.emit "answer", answer == correctIndex
+
+
+
+
 
 # # list of sockets
 # curGame = []
@@ -81,33 +132,3 @@ app.listen env.Port
 #     ,TIME
 
 #   ,4000
-
-
-
-
-
-# # socket server to listen to socket connections
-# io = io.listen(app)
-# app.listen(3000)
-
-# io.sockets.on 'connection', (socket) ->
-#   socket
-#     .on 'master', ->
-#       socket.emit 'link', 0
-#       console.log 'master connection'
-
-#       curGame.push socket
-#       broadcast curGame
-
-#     .on 'contestant', (info) ->
-#       console.error 'contestant'
-#       curGame.push socket
-#       contenters.push socket.id unless gameStarted
-
-#     .on 'answer', (answer) ->
-
-#       # if they're still in the game and haven't answered yet
-#       if contenters.indexOf(socket.id) != -1 and !advancers[socket.id]?
-#         advancers[socket.id] = answer == correctIndex
-#         socket.emit "answer", answer == correctIndex
-

@@ -1,14 +1,12 @@
 events       = require 'events'
-urlGenerator = require 'resources/url_generator'
+urlGenerator = require '../resources/url_generator'
 _            = require 'underscore'
 
 class Game extends events.EventEmitter
 
-  constructor: (@gameData) ->
+  constructor: (@gameData,@master) ->
     @users = {}
     @url = urlGenerator.getUrl()
-
-    this.emit "state:pregame"
 
   addUser: (user) ->
 

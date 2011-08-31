@@ -1,6 +1,6 @@
 fs = require 'fs'
 
-file = fs.readFileSync 'content/trivia.csv', 'utf8'
+file = fs.readFileSync 'resources/trivia.csv', 'utf8'
 
 questions = []
 

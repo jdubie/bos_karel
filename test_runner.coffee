@@ -38,6 +38,7 @@ module.exports.run = (testFiles) ->
   # set callback
   cbs = new combo.Combo (callbacks...) ->
     terminal.puts '\n[green]ALL TESTS COMPLETE[/green]\n'
+    process.exit 0
 
   # create closure
   tests = _.map (_.keys tests), (test) ->

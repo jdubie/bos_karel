@@ -16,4 +16,4 @@ else
 
 
 module.exports.Port = pwds["client-#{envInfo.cluster_env}"].port
-module.exports.host = pwds["client-#{envInfo.cluster_env}"].host
+module.exports.Host = pwds["client-#{envInfo.cluster_env}"].host

@@ -7,7 +7,7 @@
     , "coffeekup": "0.2.3"
     , "socket.io": "0.7.9"
     , "terminal": "0.1.2"
-    ,"coffee-script"     : "1.0.1"
+    ,"coffee-script"     : "1.1.1"
     ,"whiskey"           : "0.4.0"
     ,"underscore"        : "1.1.6"
     ,"forever"           : "0.6.3"
@@ -15,5 +15,4 @@
     ,"combo"             : "https://github.com/jdubie/combo/tarball/master"
     ,"sprintf"          : "0.1.1"
   }
-
 }

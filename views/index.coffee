@@ -1,7 +1,32 @@
 doctype 5
 html ->
   head ->
-    link href: 'stylesheets/style.css', rel: 'stylesheet', type: 'text/css'
+    # link href: 'stylesheets/style.css', rel: 'stylesheet', type: 'text/css'
+
+    link rel: 'stylesheet', type: 'text/css', href: 'stylesheets/jquery-ui.css'
+    script type: 'text/javascript', src: 'javascripts/jquery.min.js'
+    script type: 'text/javascript', src: 'javascripts/jquery-ui.min.js'
+
+    script type: 'text/javascript', src: 'javascripts/mustache.js'
+    script type: 'text/javascript', src: 'javascripts/underscore.js'
+    script type: 'text/javascript', src: 'javascripts/backbone.js'
+    script type: 'text/javascript', src: '/socket.io/socket.io.js'
+
+    script type: 'text/javascript', src: 'javascripts/d3.js'
+    script type: 'text/javascript', src: 'javascripts/d3.layout.js'
+
+    script type: 'text/javascript', src: '/env.js'
+
+    coffeescript ->
+      $(document).ready ->
+
+        # Profile = Backbone.Model.extend
+
+        socket = io.connect "http://#{window.trivia_host}:#{window.trivia_port}"
+        socket.on 'connect'
+          socket.emit 'master'
+
+
   body ->
     div id: 'sidebar', ->
       h1 id: 'join', 'Join the Next Game'
