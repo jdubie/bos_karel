@@ -5,9 +5,7 @@ io           = require 'socket.io'
 _            = require 'underscore'
 
 env          = require 'env'
-resources    = require 'resources/game1'
 trivia       = require 'objects/simple_trivia'
-
 User         = require 'objects/user'
 
 
