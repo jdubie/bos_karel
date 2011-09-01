@@ -80,21 +80,21 @@ exports['test broadcast'] = (finish,assert) ->
 
   game.broadcast command: 'yo', message: 'whats up broskis?'
 
-exports['test message where'] = (finish,assert,log) ->
+# exports['test message where'] = (finish,assert,log) ->
 
-  wrongUser = new User(new FakeSocket('wrong'))
-  rightUser = new User(new FakeSocket('right'))
-  game = new Game
-  game.addUser wrongUser
-  game.addUser rightUser
+#   wrongUser = new User(new FakeSocket('wrong'))
+#   rightUser = new User(new FakeSocket('right'))
+#   game = new Game
+#   game.addUser wrongUser
+#   game.addUser rightUser
 
-  wrongUser.socket.on 'resp', (message) ->
-    assert.fail "this user should not be recieving this message"
-    finish()
+#   wrongUser.socket.on 'resp', (message) ->
+#     assert.fail "this user should not be recieving this message"
+#     finish()
 
-  rightUser.socket.on 'resp', (message) ->
-    assert.equal message, "right"
-    setTimeout finish, 10
+#   rightUser.socket.on 'resp', (message) ->
+#     assert.equal message, "right"
+#     setTimeout finish, 10
 
-  game.messageWhere command: 'resp', data: 'right', (id,users) ->
-    users[id].id == 'right'
+#   game.messageWhere command: 'resp', data: 'right', (id,users) ->
+#     users[id].id == 'right'

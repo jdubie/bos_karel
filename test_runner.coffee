@@ -25,7 +25,7 @@ setupFun = (testName,test,callback) ->
       callback(testName,"Fail")
       throw err
 
-module.exports.run = (testFiles) ->
+module.exports.run = (testFiles,verbose) ->
 
   tests = {}
   for testFile in testFiles
@@ -38,7 +38,7 @@ module.exports.run = (testFiles) ->
   # set callback
   cbs = new combo.Combo (callbacks...) ->
     terminal.puts '\n[green]ALL TESTS COMPLETE[/green]\n'
-    process.exit 0
+    process.exit(0) unless verbose
 
   # create closure
   tests = _.map (_.keys tests), (test) ->

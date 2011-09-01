@@ -54,7 +54,7 @@ task 'test', 'runs all tests suites found in test/. optionall takes --except [TE
 
     runner = require './test_runner'
 
-    runner.run testFiles
+    runner.run testFiles, options.verbose?
 
 
 

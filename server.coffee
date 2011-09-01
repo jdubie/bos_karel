@@ -1,11 +1,14 @@
+require.paths.unshift([__dirname,'.'].join('/'))
+
 express      = require 'express'
 io           = require 'socket.io'
 _            = require 'underscore'
 
-env          = require './env'
-resources    = require './resources/game1'
-trivia       = require './objects/simple_trivia'
+env          = require 'env'
+resources    = require 'resources/game1'
+trivia       = require 'objects/simple_trivia'
 
+User         = require 'objects/user'
 
 
 if process.env.DEBUG
@@ -55,6 +58,9 @@ io.sockets.on 'connection', (socket) ->
       game = new trivia resources, socket
       games[game.url] = game
       game.start()
+
+      # add master as user
+      game.addUser new User socket
 
     .on 'contestant', (url) ->
 

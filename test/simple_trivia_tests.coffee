@@ -3,6 +3,7 @@ require.paths.unshift([__dirname,'..'].join('/'))
 events       = require 'events'
 _            = require 'underscore'
 User         = require 'objects/user'
+Game         = require 'objects/game'
 SimpleTrivia = require 'objects/simple_trivia'
 
 exports['test state of game changes on events'] = (finish,assert,log) ->
@@ -68,8 +69,6 @@ exports['test we get broadcast of time remaining'] = (finish,assert,log) ->
   fs.on 'TIME', (data) ->
     if first?
       assert.ok Math.abs(first - 1000 - data) < 10
-      # clearTimeout st.timeout
-      # clearInterval st.interval
       finish()
     first = data
 
@@ -78,3 +77,34 @@ exports['test we get broadcast of time remaining'] = (finish,assert,log) ->
   user = new User fs
   st.addUser user
 
+
+
+exports['test we can create a trival game with data'] = (finish,assert,log) ->
+
+  st = new SimpleTrivia
+  assert.ok st.gameData
+  finish()
+
+exports['test we questions broadcasted'] = (finish,assert,log) ->
+
+  id = 'few'
+
+  st = new SimpleTrivia
+
+  fs = new FakeSocket id
+
+  i = 0
+  fs.on 'QUESTION', (data) ->
+    assert.equal st.gameData[i], data
+    i++
+    if i == 2 #gameData.length
+      finish()
+
+  st.start()
+  clearTimeout st.timeout
+  clearInterval st.interval
+
+  user = new User fs
+  st.addUser user
+
+  st.emit 'start'
