@@ -6,36 +6,44 @@ User         = require 'objects/user'
 Game         = require 'objects/game'
 SimpleTrivia = require 'objects/simple_trivia'
 
-exports['test state of game changes on events'] = (finish,assert,log) ->
+st = require 'constants/simple_trivia'
 
-  st = new SimpleTrivia
-  st.start()
-  clearTimeout st.timeout
-
-  assert.equal st.state, 'PRE_GAME'
-
-  st.emit 'start'
-
-  assert.equal st.state, 'GAME'
-
-  finish()
 
 class FakeSocket extends events.EventEmitter
   constructor: (@id) ->
 
+exports['test state of game changes on events'] = (finish,assert,log) ->
+
+  masterSocket = new FakeSocket 'master'
+  simpleTrivial = new SimpleTrivia new User masterSocket
+  simpleTrivial.start()
+  clearTimeout simpleTrivial.timeout
+
+  assert.equal simpleTrivial.state, 'PRE_GAME'
+
+  simpleTrivial.emit 'start'
+
+  assert.equal simpleTrivial.state, 'GAME'
+
+  finish()
+
 exports['test no users can join during game'] = (finish,assert,log) ->
 
-  st = new SimpleTrivia
-  fs = new FakeSocket
-  st.start()
-  clearTimeout st.timeout
+  masterSocket = new FakeSocket 'master'
+  simpleTrivial = new SimpleTrivia new User masterSocket
+  fs = new FakeSocket 'cantJoin'
+  simpleTrivial.start()
+  clearTimeout simpleTrivial.timeout
 
-  st.emit 'start' # now game is no longer in PRE_GAME
+  simpleTrivial.emit 'start' # now game is no longer in PRE_GAME
 
   user = new User fs
-  st.addUser user
+  simpleTrivial.addUser user
 
-  assert.deepEqual st.users, {}
+  # should only be master and not cantJoin
+  assert.equal _.keys(simpleTrivial.users).length, 1
+  assert.equal simpleTrivial.users['cantJoin'], undefined
+  assert.equal simpleTrivial.users['master'].id, 'master'
 
   finish()
 
@@ -43,68 +51,86 @@ exports['test we can add users during pregame'] = (finish,assert,log) ->
 
   id = 'wefwefwef'
 
-  st = new SimpleTrivia
+  masterSocket = new FakeSocket 'master'
+  simpleTrivial = new SimpleTrivia new User masterSocket
   fs = new FakeSocket id
-  st.start()
-  clearTimeout st.timeout
+  simpleTrivial.start()
+  clearTimeout simpleTrivial.timeout
 
   # still in PRE_GAME so should be able to add users
   user = new User fs
-  st.addUser user
+  simpleTrivial.addUser user
 
   # log st.users
-  assert.equal st.users[id].id, id
-  assert.equal (_.keys st.users).length, 1
+  assert.equal simpleTrivial.users[id].id, id
+  assert.equal (_.keys simpleTrivial.users).length, 1+1 # 1 for master
 
   finish()
 
-exports['test we get broadcast of time remaining'] = (finish,assert,log) ->
 
-  id = 'wefwefwef'
+# exports['test we get broadcast of time remaining'] = (finish,assert,log) ->
 
-  st = new SimpleTrivia
-  fs = new FakeSocket id
+#   id = 'wefwefwef'
 
-  first = undefined
-  fs.on 'TIME', (data) ->
-    if first?
-      assert.ok Math.abs(first - 1000 - data) < 10
-      finish()
-    first = data
+#   masterSocket = new FakeSocket 'master'
+#   simpleTrivial = new SimpleTrivia new User masterSocket
 
-  st.start()
+#   first = undefined
+#   masterSocket.on 'TIME', (data) ->
+#     if first?
+#       assert.ok Math.abs(first - 1000 - data) < 10
+#       finish()
+#     first = data
 
-  user = new User fs
-  st.addUser user
+#   simpleTrivial.start()
 
 
+exports['test we can create a trivia game with data'] = (finish,assert,log) ->
 
-exports['test we can create a trival game with data'] = (finish,assert,log) ->
-
-  st = new SimpleTrivia
+  fs = new FakeSocket 'idwef'
+  st = new SimpleTrivia new User fs
   assert.ok st.gameData
   finish()
 
-exports['test we questions broadcasted'] = (finish,assert,log) ->
+exports['test we can create a trivia game with master'] = (finish,assert,log) ->
 
-  id = 'few'
+  fs = new FakeSocket 'idwef'
+  st = new SimpleTrivia new User fs
 
-  st = new SimpleTrivia
+  assert.ok st.master
+  assert.equal st.master.id, 'idwef'
+  finish()
 
-  fs = new FakeSocket id
+exports['test that master is also a user'] = (finish,assert,log) ->
 
-  i = 0
-  fs.on 'QUESTION', (data) ->
-    assert.equal st.gameData[i], data
-    i++
-    if i == 2 #gameData.length
-      finish()
+  fs = new FakeSocket 'idwef'
+  st = new SimpleTrivia(new User(fs))
 
-  st.start()
-  clearTimeout st.timeout
-  clearInterval st.interval
+  assert.equal _.keys(st.users).length, 1
+  assert.equal st.users['idwef'].id, 'idwef'
 
-  user = new User fs
-  st.addUser user
+  finish()
 
-  st.emit 'start'
+# # exports['test we questions broadcasted'] = (finish,assert,log) ->
+
+# #   id = 'few'
+
+# #   fs = new FakeSocket id
+# #   masterSocket = new FakeSocket 'master'
+# #   st = new SimpleTrivia new User masterSocket
+
+# #   i = 0
+# #   fs.on 'QUESTION', (data) ->
+# #     assert.equal st.gameData[i], data
+# #     i++
+# #     if i == 2 #gameData.length
+# #       finish()
+
+# #   st.start()
+# #   clearTimeout st.timeout
+# #   clearInterval st.interval
+
+# #   user = new User fs
+# #   st.addUser user
+
+# #   st.emit 'start'

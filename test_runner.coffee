@@ -12,6 +12,7 @@ setupFun = (testName,test,callback) ->
     assert = require 'assert'
 
     cb = ->
+      # test = undefined ## for garabage collection?
       terminal.puts "#{testName}\t\t\t[green]PASSED[/green]"
       callback(testName,"Pass")
 

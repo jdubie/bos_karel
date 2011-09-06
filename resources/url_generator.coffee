@@ -6,4 +6,4 @@ actors = [
 ]
 
 module.exports.getUrl = ->
-  actors[Math.floor(Math.random()*4)]
+  actors[Math.floor(Math.random()*actors.length)]

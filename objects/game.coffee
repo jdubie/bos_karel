@@ -5,10 +5,16 @@ _            = require 'underscore'
 class Game extends events.EventEmitter
 
   constructor: (@gameData,@master) ->
-    @users = {}
     @url = urlGenerator.getUrl()
+    @users = {}
+    # console.error @master?
+    # console.error this.addUser.toString()
+    this.addUser(@master) if @master?
+    # console.error @users
 
   addUser: (user) ->
+    # console.error 'here'
+    # console.error user
 
     # assign this user's parent
     user.parent = this

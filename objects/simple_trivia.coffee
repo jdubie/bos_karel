@@ -1,6 +1,9 @@
+require.paths.unshift([__dirname,'..'].join('/'))
+
 fs = require 'fs'
 
-Game = require './game'
+Game = require 'objects/game'
+st   = require 'constants/simple_trivia'
 
 if process.env.NODE_ENV == 'db'
   debug = (msg) ->
@@ -9,14 +12,13 @@ else
   debug = ->
 
 
-PRE_GAME = 1000*5
 
 class SimpleTrivia extends Game
 
   constructor: (master) ->
     gameData = fs.readFileSync 'resources/trivia.json'
     gameData = JSON.parse gameData
-    Game.prototype.constructor.call(this,gameData,master)
+    Game.prototype.constructor(gameData,master)
 
   # over rides super class start
   start: ->
@@ -24,16 +26,16 @@ class SimpleTrivia extends Game
     this.on 'start', =>
       this.state = "GAME"
       debug 'starting game'
-      clearInterval this.interval
+      clearInterval @interval
 
-      if @gameData
-        counter = 0
-        this.interval = setInterval =>
-          if counter == @gameData.length - 1
-            clearInterval this.interval
-          this.broadcast command: 'QUESTION', data: @gameData[counter]
-          counter++
-        ,1000
+      # if @gameData
+      #   counter = 0
+      #   @interval = setInterval =>
+      #     if counter == @gameData.length - 1
+      #       clearInterval @interval
+      #     @broadcast command: 'QUESTION', data: @gameData[counter]
+      #     counter++
+      #   ,st.TIME_GAME_QUESTION
 
 
     this.state = "PRE_GAME"
@@ -41,16 +43,17 @@ class SimpleTrivia extends Game
 
     this.timeout = setTimeout =>
       this.emit 'start'
-    ,PRE_GAME
+    ,st.TIME_PRE_GAME_TIMEOUT
 
-    this.timeRemaining = PRE_GAME
+    this.timeRemaining = st.TIME_PRE_GAME_TIMEOUT
     this.interval = setInterval =>
-      this.timeRemaining -= 1000
-      this.broadcast command: 'TIME', data: this.timeRemaining
-    ,1000
+      @timeRemaining -= st.TIME_PRE_GAME_INTERVAL
+      @master.sendMessage command: 'TIME', data: @timeRemaining
+    ,st.TIME_PRE_GAME_INTERVAL
 
   addUser: (user) ->
     if this.state == "PRE_GAME"
+      # Game.prototype.addUser(user)
       Game.prototype.addUser.call(this,user)
 
 module.exports = SimpleTrivia
