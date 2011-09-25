@@ -1,0 +1,58 @@
+!!! 5
+html
+  head
+    title Karel Learns JavaScript
+    link(rel='stylesheet', href='/css/style.css', type='text/css')
+    script(type='text/javascript', src='/lib/util.js')
+    script(type='text/javascript', src='/lib/point.js')
+    script(type='text/javascript', src='/lib/circle.js')
+    script(type='text/javascript', src='../codeMirror/js/codemirror.js')
+    script(type='text/javascript', src='/js/karel.js')
+    script(type='text/javascript', src='/js/beepers.js')
+    script(type='text/javascript', src='/js/walls.js')
+    script(type='text/javascript', src='/js/karelWorld.js')
+    script(type='text/javascript', src='/js/karelApplication.js')
+    script(type='text/javascript', src='/js/application.js')
+    #header
+      #inner
+        #map #{map}
+
+  body
+    #content
+      #buttonBar
+        form
+          | Start:
+          input#interactor(type='button', value='Run', id='interactor', onClick='application.runButton()')
+          | World:
+          select#interactor(name='world', size='0', onChange='application.changeWorld(this)')
+            option(value='1')
+              | 15x15.w
+            option(value='1')
+              | 12x12.w
+            option(value='2')
+              | 9x9.w
+            option(value='2')
+              | 8x2.w
+            option(value='2')
+              | 1x6.w
+            option(value='3')
+              | 4x4.w
+            option(value='3')
+              | 1x1.w
+            option(value='4')
+              | large.w
+            option(value='4')
+              | collectNewspaper.w
+            option(value='5')
+              | pothole.w
+            option(value='5')
+              | maze.w
+            option(value='6')
+              | line.w
+            option(value='7')
+              | cleanUp.w
+            option(value='8')
+              | columns.w
+
+      textarea#code(name='code') #{code}
+      canvas#canvas(name='canvas')
